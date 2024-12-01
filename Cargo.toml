@@ -1,0 +1,19 @@
+[workspace]
+resolver = "2"
+
+members = [
+    "day*",
+]
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = "warn"
+pedantic = "warn"
+nursery = "warn"
+
+cast_possible_wrap = { level = "allow", priority = 1 }
+missing_panics_doc = { level = "allow", priority = 1 }
+must_use_candidate = { level = "allow", priority = 1 }
+unreadable-literal = { level = "allow", priority = 1 }
