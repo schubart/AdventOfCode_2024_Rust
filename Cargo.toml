@@ -14,6 +14,7 @@ pedantic = "warn"
 nursery = "warn"
 
 cast_possible_wrap = { level = "allow", priority = 1 }
+cast_possible_truncation = { level = "allow", priority = 1 }
 missing_panics_doc = { level = "allow", priority = 1 }
 must_use_candidate = { level = "allow", priority = 1 }
 unreadable-literal = { level = "allow", priority = 1 }
