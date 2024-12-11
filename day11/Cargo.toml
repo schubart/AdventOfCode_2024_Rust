@@ -1,0 +1,10 @@
+[package]
+name = "day11"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+memoize = "0.4"
+
+[lints]
+workspace = true
