@@ -20,9 +20,9 @@ pub fn solve(input: &str, stretch: bool) -> usize {
         };
 
         let can_move = if dy == 0 {
-            move_x_(&mut grid, pos, dx)
+            move_x(&mut grid, pos, dx)
         } else {
-            push(&mut grid, HashSet::from([pos]), dy)
+            move_y(&mut grid, HashSet::from([pos]), dy)
         };
 
         if can_move {
@@ -35,14 +35,14 @@ pub fn solve(input: &str, stretch: bool) -> usize {
         .sum::<isize>() as usize
 }
 
-fn move_x_(grid: &mut Grid, pos: Point, dir: isize) -> bool {
+fn move_x(grid: &mut Grid, pos: Point, dir: isize) -> bool {
     let next = (pos.0 + dir, pos.1);
     let tile = grid[&next];
 
     let ok = match tile {
         '#' => false,
         '.' => true,
-        _ => move_x_(grid, next, dir),
+        _ => move_x(grid, next, dir),
     };
 
     if ok {
@@ -53,7 +53,7 @@ fn move_x_(grid: &mut Grid, pos: Point, dir: isize) -> bool {
     ok
 }
 
-fn push(grid: &mut Grid, set: HashSet<(isize, isize)>, dir_y: isize) -> bool {
+fn move_y(grid: &mut Grid, set: HashSet<(isize, isize)>, dir_y: isize) -> bool {
     if set.is_empty() {
         return true;
     }
@@ -81,7 +81,7 @@ fn push(grid: &mut Grid, set: HashSet<(isize, isize)>, dir_y: isize) -> bool {
         }
     }
 
-    if push(grid, new_set, dir_y) {
+    if move_y(grid, new_set, dir_y) {
         for pos in set {
             let tile = grid[&pos];
             grid.insert((pos.0, pos.1 + dir_y), tile);
