@@ -101,43 +101,6 @@ pub fn solve2(input: &str) -> usize {
         .sum::<isize>() as usize
 }
 
-fn parse(input: &str, stretch: bool) -> (HashMap<(isize, isize), char>, (isize, isize), String) {
-    let input = if stretch {
-        input
-            .replace("#", "##")
-            .replace("O", "[]")
-            .replace(".", "..")
-            .replace("@", "@.")
-    } else {
-        input.to_string()
-    };
-
-    let mut lines = input.lines();
-
-    let mut pos = (0, 0);
-    let mut grid = HashMap::new();
-    let mut y = 0;
-    loop {
-        let line = lines.next().unwrap();
-        if line.is_empty() {
-            break;
-        }
-        for (x, c) in line.chars().enumerate() {
-            if c == '@' {
-                pos = (x as isize, y as isize);
-                grid.insert((x as isize, y as isize), '.');
-            } else {
-                grid.insert((x as isize, y as isize), c);
-            }
-        }
-        y += 1;
-    }
-
-    let moves = lines.collect();
-
-    (grid, pos, moves)
-}
-
 fn push(
     grid: &mut HashMap<(isize, isize), char>,
     set: HashSet<(isize, isize)>,
@@ -177,6 +140,43 @@ fn push(
     }
 
     false
+}
+
+fn parse(input: &str, stretch: bool) -> (HashMap<(isize, isize), char>, (isize, isize), String) {
+    let input = if stretch {
+        input
+            .replace("#", "##")
+            .replace("O", "[]")
+            .replace(".", "..")
+            .replace("@", "@.")
+    } else {
+        input.to_string()
+    };
+
+    let mut lines = input.lines();
+
+    let mut pos = (0, 0);
+    let mut grid = HashMap::new();
+    let mut y = 0;
+    loop {
+        let line = lines.next().unwrap();
+        if line.is_empty() {
+            break;
+        }
+        for (x, c) in line.chars().enumerate() {
+            if c == '@' {
+                pos = (x as isize, y as isize);
+                grid.insert((x as isize, y as isize), '.');
+            } else {
+                grid.insert((x as isize, y as isize), c);
+            }
+        }
+        y += 1;
+    }
+
+    let moves = lines.collect();
+
+    (grid, pos, moves)
 }
 
 #[test]
