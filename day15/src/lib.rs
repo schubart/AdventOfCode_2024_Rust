@@ -17,8 +17,8 @@ pub fn solve(input: &str) -> usize {
             pos = move_x(&mut grid, pos, 1);
         } else {
             let dir = match m {
-//                '<' => (-1, 0),
-//                '>' => (1, 0),
+                //                '<' => (-1, 0),
+                //                '>' => (1, 0),
                 '^' => (0, -1),
                 'v' => (0, 1),
                 _ => panic!("{m:?}"),
@@ -86,50 +86,33 @@ pub fn solve2(input: &str) -> usize {
     let (mut grid, mut pos, moves) = parse(input, true);
 
     for m in moves.chars() {
-        let dir = match m {
-            '<' => (-1, 0),
-            '>' => (1, 0),
-            '^' => (0, -1),
-            'v' => (0, 1),
-            _ => panic!("{m:?}"),
-        };
+        if m == '<' {
+            pos = move_x(&mut grid, pos, -1);
+        } else if m == '>' {
+            pos = move_x(&mut grid, pos, 1);
+        } else {
+            let dir = match m {
+//                '<' => (-1, 0),
+//                '>' => (1, 0),
+                '^' => (0, -1),
+                'v' => (0, 1),
+                _ => panic!("{m:?}"),
+            };
 
-        let next = (pos.0 + dir.0, pos.1 + dir.1);
-        let tile = grid[&next];
+            let next = (pos.0 + dir.0, pos.1 + dir.1);
+            let tile = grid[&next];
 
-        match tile {
-            '#' => (),
-            '.' => pos = next,
-            '[' | ']' => {
-                if m == '<' || m == '>' {
-                    let mut offset = 2;
-                    loop {
-                        let target = (pos.0 + offset * dir.0, pos.1 + offset * dir.1);
-                        match grid[&target] {
-                            '.' => {
-                                for i in (2..=offset).rev() {
-                                    let to = (pos.0 + i * dir.0, pos.1);
-                                    let from = (pos.0 + (i - 1) * dir.0, pos.1);
-                                    let tile = grid[&from];
-                                    grid.insert(to, tile);
-                                }
-                                grid.insert(next, '.');
-                                pos = next;
-                                break;
-                            }
-                            '[' | ']' => offset += 1,
-                            '#' => break,
-                            _ => panic!(),
-                        }
-                    }
-                } else {
+            match tile {
+                '#' => (),
+                '.' => pos = next,
+                '[' | ']' => {
                     let set = HashSet::from([pos]);
                     if push(&mut grid, set, dir.1) {
                         pos = next;
                     }
                 }
+                _ => panic!(),
             }
-            _ => panic!(),
         }
     }
 
