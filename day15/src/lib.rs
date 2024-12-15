@@ -90,26 +90,26 @@ pub fn solve2(input: &str) -> usize {
             pos = move_x(&mut grid, pos, -1);
         } else if m == '>' {
             pos = move_x(&mut grid, pos, 1);
+        } else if m == '^' {
+            pos = move_y(&mut grid, pos, -1);
+        } else if m == 'v' {
+            pos = move_y(&mut grid, pos, 1);
         } else {
-            let dir = match m {
-//                '<' => (-1, 0),
-//                '>' => (1, 0),
-                '^' => (0, -1),
-                'v' => (0, 1),
-                _ => panic!("{m:?}"),
-            };
-
-            let next = (pos.0 + dir.0, pos.1 + dir.1);
-            let set = HashSet::from([pos]);
-            if push(&mut grid, set, dir.1) {
-                pos = next;
-            }
+            panic!()
         }
     }
 
     grid.iter()
         .filter_map(|((x, y), c)| (c == &'[').then_some(x + 100 * y))
         .sum::<isize>() as usize
+}
+
+fn move_y(grid: &mut Grid, pos: Point, dir: isize) -> Point {
+    if push(grid, HashSet::from([pos]), dir) {
+        (pos.0, pos.1 + dir)
+    } else {
+        pos
+    }
 }
 
 fn push(grid: &mut Grid, set: HashSet<(isize, isize)>, dir_y: isize) -> bool {
