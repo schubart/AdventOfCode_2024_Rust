@@ -1,5 +1,12 @@
+#![allow(clippy::cast_sign_loss)]
+
 use std::collections::HashMap;
 use std::collections::HashSet;
+
+type Point = (isize, isize);
+type Grid = HashMap<Point, char>;
+type Moves = String;
+
 
 pub fn solve(input: &str) -> usize {
     let (mut grid, mut pos, moves) = parse(input, false);
@@ -102,7 +109,7 @@ pub fn solve2(input: &str) -> usize {
 }
 
 fn push(
-    grid: &mut HashMap<(isize, isize), char>,
+    grid: &mut Grid,
     set: HashSet<(isize, isize)>,
     dir_y: isize,
 ) -> bool {
@@ -142,13 +149,13 @@ fn push(
     false
 }
 
-fn parse(input: &str, stretch: bool) -> (HashMap<(isize, isize), char>, (isize, isize), String) {
+fn parse(input: &str, stretch: bool) -> (Grid, Point, Moves) {
     let input = if stretch {
         input
-            .replace("#", "##")
-            .replace("O", "[]")
-            .replace(".", "..")
-            .replace("@", "@.")
+            .replace('#', "##")
+            .replace('O', "[]")
+            .replace('.', "..")
+            .replace('@', "@.")
     } else {
         input.to_string()
     };
