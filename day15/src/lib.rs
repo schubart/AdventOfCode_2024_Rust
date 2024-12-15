@@ -14,21 +14,21 @@ pub fn solve(input: &str) -> usize {
         };
 
         let next = (pos.0 + dir.0, pos.1 + dir.1);
-        let tile = grid.get(&next);
+        let tile = grid[&next];
 
         match tile {
-            None | Some(&'#') => (),
-            Some(&'.') => pos = next,
-            Some(&'O') => {
+            '#' => (),
+            '.' => pos = next,
+            'O' => {
                 let mut offset = 2;
                 loop {
                     let target = (pos.0 + offset * dir.0, pos.1 + offset * dir.1);
-                    if grid.get(&target) == Some(&'.') {
+                    if grid[&target] == '.' {
                         grid.insert(next, '.');
                         grid.insert(target, 'O');
                         pos = next;
                         break;
-                    } else if grid.get(&target) == Some(&'O') {
+                    } else if grid[&target] == 'O' {
                         offset += 1;
                     } else {
                         break;
@@ -48,7 +48,6 @@ pub fn solve2(input: &str) -> usize {
     let (mut grid, mut pos, moves) = parse(input, true);
 
     for m in moves.chars() {
-        //        print(&grid, pos);
 
         let dir = match m {
             '<' => (-1, 0),
@@ -59,17 +58,17 @@ pub fn solve2(input: &str) -> usize {
         };
 
         let next = (pos.0 + dir.0, pos.1 + dir.1);
-        let tile = grid.get(&next);
+        let tile = grid[&next];
 
         match tile {
-            None | Some(&'#') => (),
-            Some(&'.') => pos = next,
-            Some(&'[') | Some(&']') => {
+            '#' => (),
+            '.' => pos = next,
+            '[' | ']' => {
                 if m == '<' || m == '>' {
                     let mut offset = 2;
                     loop {
                         let target = (pos.0 + offset * dir.0, pos.1 + offset * dir.1);
-                        match &grid[&target] {
+                        match grid[&target] {
                             '.' => {
                                 for i in (2..=offset).rev() {
                                     let to = (pos.0 + i * dir.0, pos.1);
