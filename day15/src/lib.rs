@@ -7,42 +7,47 @@ type Point = (isize, isize);
 type Grid = HashMap<Point, char>;
 type Moves = String;
 
-
 pub fn solve(input: &str) -> usize {
     let (mut grid, mut pos, moves) = parse(input, false);
 
     for m in moves.chars() {
-        let dir = match m {
-            '<' => (-1, 0),
-            '>' => (1, 0),
-            '^' => (0, -1),
-            'v' => (0, 1),
-            _ => panic!("{m:?}"),
-        };
+        if m == '<' {
+            pos = move_x(&mut grid, pos, -1);
+        } else if m == '>' {
+            pos = move_x(&mut grid, pos, 1);
+        } else {
+            let dir = match m {
+//                '<' => (-1, 0),
+//                '>' => (1, 0),
+                '^' => (0, -1),
+                'v' => (0, 1),
+                _ => panic!("{m:?}"),
+            };
 
-        let next = (pos.0 + dir.0, pos.1 + dir.1);
-        let tile = grid[&next];
+            let next = (pos.0 + dir.0, pos.1 + dir.1);
+            let tile = grid[&next];
 
-        match tile {
-            '#' => (),
-            '.' => pos = next,
-            'O' => {
-                let mut offset = 2;
-                loop {
-                    let target = (pos.0 + offset * dir.0, pos.1 + offset * dir.1);
-                    if grid[&target] == '.' {
-                        grid.insert(next, '.');
-                        grid.insert(target, 'O');
-                        pos = next;
-                        break;
-                    } else if grid[&target] == 'O' {
-                        offset += 1;
-                    } else {
-                        break;
+            match tile {
+                '#' => (),
+                '.' => pos = next,
+                'O' => {
+                    let mut offset = 2;
+                    loop {
+                        let target = (pos.0 + offset * dir.0, pos.1 + offset * dir.1);
+                        if grid[&target] == '.' {
+                            grid.insert(next, '.');
+                            grid.insert(target, 'O');
+                            pos = next;
+                            break;
+                        } else if grid[&target] == 'O' {
+                            offset += 1;
+                        } else {
+                            break;
+                        }
                     }
                 }
+                _ => panic!(),
             }
-            _ => panic!(),
         }
     }
 
@@ -51,11 +56,36 @@ pub fn solve(input: &str) -> usize {
         .sum::<isize>() as usize
 }
 
+fn move_x(grid: &mut Grid, pos: Point, dir: isize) -> Point {
+    if move_x_(grid, pos, dir) {
+        (pos.0 + dir, pos.1)
+    } else {
+        pos
+    }
+}
+
+fn move_x_(grid: &mut Grid, pos: Point, dir: isize) -> bool {
+    let next = (pos.0 + dir, pos.1);
+    let tile = grid[&next];
+
+    let ok = match tile {
+        '#' => false,
+        '.' => true,
+        _ => move_x_(grid, next, dir),
+    };
+
+    if ok {
+        grid.insert(next, grid[&pos]);
+        grid.insert(pos, '.');
+    }
+
+    ok
+}
+
 pub fn solve2(input: &str) -> usize {
     let (mut grid, mut pos, moves) = parse(input, true);
 
     for m in moves.chars() {
-
         let dir = match m {
             '<' => (-1, 0),
             '>' => (1, 0),
@@ -108,11 +138,7 @@ pub fn solve2(input: &str) -> usize {
         .sum::<isize>() as usize
 }
 
-fn push(
-    grid: &mut Grid,
-    set: HashSet<(isize, isize)>,
-    dir_y: isize,
-) -> bool {
+fn push(grid: &mut Grid, set: HashSet<(isize, isize)>, dir_y: isize) -> bool {
     if set.is_empty() {
         return true;
     }
