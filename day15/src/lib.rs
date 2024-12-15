@@ -100,18 +100,9 @@ pub fn solve2(input: &str) -> usize {
             };
 
             let next = (pos.0 + dir.0, pos.1 + dir.1);
-            let tile = grid[&next];
-
-            match tile {
-                '#' => (),
-                '.' => pos = next,
-                '[' | ']' => {
-                    let set = HashSet::from([pos]);
-                    if push(&mut grid, set, dir.1) {
-                        pos = next;
-                    }
-                }
-                _ => panic!(),
+            let set = HashSet::from([pos]);
+            if push(&mut grid, set, dir.1) {
+                pos = next;
             }
         }
     }
