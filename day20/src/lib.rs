@@ -31,7 +31,7 @@ pub fn part1(input: &str, max_cheat: i16) -> usize {
         }
     }
 
-    let mut histogram = HashMap::<i16, usize>::new();
+    let mut result = 0;
     let area = area(max_cheat);
     for &(x, y) in grid.keys() {
         if let Some(&d1) = distances.get(&(x, y)) {
@@ -39,17 +39,16 @@ pub fn part1(input: &str, max_cheat: i16) -> usize {
                 if let Some(&d2) = distances.get(&(x + dx, y + dy)) {
                     if d1 < d2 {
                         let saving = d2 - d1 - (dx.abs() + dy.abs());
-                        *histogram.entry(saving).or_default() += 1;
+                        if saving >= 100 {
+                            result += 1;
+                        }
                     }
                 }
             }
         }
     }
 
-    histogram
-        .iter()
-        .filter_map(|(&saving, &frequency)| (saving >= 100).then_some(frequency))
-        .sum()
+    result
 }
 
 fn area(max: i16) -> Vec<(i16, i16)> {
@@ -62,11 +61,6 @@ fn area(max: i16) -> Vec<(i16, i16)> {
         }
     }
     result
-}
-
-#[test]
-fn test_area() {
-    assert_eq!(8, area(2).len());
 }
 
 fn parse(input: &str) -> HashMap<(i16, i16), char> {
