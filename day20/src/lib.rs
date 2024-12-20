@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet, VecDeque};
 
-pub fn part1(input: &str, max_cheat: isize) -> usize {
+pub fn part1(input: &str, max_cheat: i16) -> usize {
     let mut grid = parse(input);
     let start = grid
         .iter()
@@ -17,7 +17,7 @@ pub fn part1(input: &str, max_cheat: isize) -> usize {
     let mut distances = HashMap::new();
     let mut queue = VecDeque::from([(start, 0)]);
     while let Some((pos, distance)) = queue.pop_front() {
-        if distance >= *distances.get(&pos).unwrap_or(&isize::MAX) {
+        if distance >= *distances.get(&pos).unwrap_or(&i16::MAX) {
             continue;
         }
 
@@ -31,7 +31,7 @@ pub fn part1(input: &str, max_cheat: isize) -> usize {
         }
     }
 
-    let mut histogram = HashMap::<isize, usize>::new();
+    let mut histogram = HashMap::<i16, usize>::new();
     let area = area(max_cheat);
     for &(x, y) in grid.keys() {
         if let Some(&d1) = distances.get(&(x, y)) {
@@ -52,7 +52,7 @@ pub fn part1(input: &str, max_cheat: isize) -> usize {
         .sum()
 }
 
-fn area(max: isize) -> HashSet<(isize, isize)> {
+fn area(max: i16) -> HashSet<(i16, i16)> {
     let mut result = HashSet::new();
     for dx in 0..=max {
         for dy in 0..=max {
@@ -72,11 +72,11 @@ fn test_area() {
     assert_eq!(8, area(2).len());
 }
 
-fn parse(input: &str) -> HashMap<(isize, isize), char> {
+fn parse(input: &str) -> HashMap<(i16, i16), char> {
     let mut result = HashMap::new();
     for (y, line) in input.lines().enumerate() {
         for (x, c) in line.chars().enumerate() {
-            result.insert((x as isize, y as isize), c);
+            result.insert((x as i16, y as i16), c);
         }
     }
     result
