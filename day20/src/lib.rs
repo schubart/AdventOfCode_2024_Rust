@@ -54,13 +54,10 @@ pub fn part1(input: &str, max_cheat: i16) -> usize {
 
 fn area(max: i16) -> HashSet<(i16, i16)> {
     let mut result = HashSet::new();
-    for dx in 0..=max {
-        for dy in 0..=max {
-            if dx + dy >= 2 && dx + dy <= max {
+    for dx in -max..=max {
+        for dy in -max..=max {
+            if dx.abs() + dy.abs() >= 2 && dx.abs() + dy.abs() <= max {
                 result.insert((dx, dy));
-                result.insert((dx, -dy));
-                result.insert((-dx, dy));
-                result.insert((-dx, -dy));
             }
         }
     }
