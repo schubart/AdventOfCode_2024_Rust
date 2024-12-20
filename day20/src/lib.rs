@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::collections::{HashMap, VecDeque};
 
 pub fn part1(input: &str, max_cheat: i16) -> usize {
     let mut grid = parse(input);
@@ -52,12 +52,12 @@ pub fn part1(input: &str, max_cheat: i16) -> usize {
         .sum()
 }
 
-fn area(max: i16) -> HashSet<(i16, i16)> {
-    let mut result = HashSet::new();
+fn area(max: i16) -> Vec<(i16, i16)> {
+    let mut result = Vec::new();
     for dx in -max..=max {
         for dy in -max..=max {
             if dx.abs() + dy.abs() >= 2 && dx.abs() + dy.abs() <= max {
-                result.insert((dx, dy));
+                result.push((dx, dy));
             }
         }
     }
