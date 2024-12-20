@@ -31,24 +31,27 @@ pub fn part1(input: &str, max_cheat: i16) -> usize {
         }
     }
 
-    let mut result = 0;
     let area = area(max_cheat);
-    for &(x, y) in grid.keys() {
-        if let Some(&d1) = distances.get(&(x, y)) {
-            for &(dx, dy) in &area {
-                if let Some(&d2) = distances.get(&(x + dx, y + dy)) {
-                    if d1 < d2 {
-                        let saving = d2 - d1 - (dx.abs() + dy.abs());
-                        if saving >= 100 {
-                            result += 1;
+    grid.keys()
+        .map(|&(x, y)| {
+            let mut result = 0;
+
+            if let Some(&d1) = distances.get(&(x, y)) {
+                for &(dx, dy) in &area {
+                    if let Some(&d2) = distances.get(&(x + dx, y + dy)) {
+                        if d1 < d2 {
+                            let saving = d2 - d1 - (dx.abs() + dy.abs());
+                            if saving >= 100 {
+                                result += 1;
+                            }
                         }
                     }
                 }
             }
-        }
-    }
 
-    result
+            result
+        })
+        .sum()
 }
 
 fn area(max: i16) -> Vec<(i16, i16)> {
