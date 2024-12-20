@@ -1,6 +1,6 @@
-use std::collections::{HashMap, VecDeque};
+use std::collections::{HashMap, HashSet, VecDeque};
 
-pub fn part1(input: &str) -> usize {
+pub fn part1(input: &str, max_cheat: isize) -> usize {
     let mut grid = parse(input);
     let start = grid
         .iter()
@@ -17,7 +17,7 @@ pub fn part1(input: &str) -> usize {
     let mut distances = HashMap::new();
     let mut queue = VecDeque::from([(start, 0)]);
     while let Some((pos, distance)) = queue.pop_front() {
-        if distance >= *distances.get(&pos).unwrap_or(&usize::MAX) {
+        if distance >= *distances.get(&pos).unwrap_or(&isize::MAX) {
             continue;
         }
 
@@ -26,51 +26,50 @@ pub fn part1(input: &str) -> usize {
         for (dx, dy) in [(-1, 0), (1, 0), (0, -1), (0, 1)] {
             let next = (pos.0 + dx, pos.1 + dy);
             if grid.get(&next) != Some(&'#') {
-                queue.push_back((next, distance + 1))
+                queue.push_back((next, distance + 1));
             }
         }
     }
 
-    grid
-        .iter()
-        .filter(|(&pos, &c)| {
-            if c == '#' {
-                if let Some(s) = savings(&distances, pos) {
-                    s >= 100
-                } else {
-                    false
+    let mut histogram = HashMap::<isize, usize>::new();
+    let area = area(max_cheat);
+    for &(x, y) in grid.keys() {
+        if let Some(&d1) = distances.get(&(x, y)) {
+            for &(dx, dy) in &area {
+                if let Some(&d2) = distances.get(&(x + dx, y + dy)) {
+                    if d1 < d2 {
+                        let saving = d2 - d1 - (dx.abs() + dy.abs());
+                        *histogram.entry(saving).or_default() += 1;
+                    }
                 }
-            } else {
-                false
             }
-        })
-        .count()
-}
-
-fn savings(distances: &HashMap<(isize, isize), usize>, cheat: (isize, isize)) -> Option<usize> {
-    let n1 = (cheat.0 - 1, cheat.1);
-    let n2 = (cheat.0 + 1, cheat.1);
-    if let Some(&d1) = distances.get(&n1) {
-        if let Some(&d2) = distances.get(&n2) {
-            return Some(d1.abs_diff(d2) - 2);
         }
     }
 
-    let n1 = (cheat.0, cheat.1 - 1);
-    let n2 = (cheat.0, cheat.1 + 1);
-    if let Some(&d1) = distances.get(&n1) {
-        if let Some(&d2) = distances.get(&n2) {
-            return Some(d1.abs_diff(d2) - 2);
-        }
-    }
-
-    None
+    histogram
+        .iter()
+        .filter_map(|(&saving, &frequency)| (saving >= 100).then_some(frequency))
+        .sum()
 }
 
-pub fn part2(input: &str) -> usize {
-    let grid = parse(input);
+fn area(max: isize) -> HashSet<(isize, isize)> {
+    let mut result = HashSet::new();
+    for dx in 0..=max {
+        for dy in 0..=max {
+            if dx + dy >= 2 && dx + dy <= max {
+                result.insert((dx, dy));
+                result.insert((dx, -dy));
+                result.insert((-dx, dy));
+                result.insert((-dx, -dy));
+            }
+        }
+    }
+    result
+}
 
-    grid.len()
+#[test]
+fn test_area() {
+    assert_eq!(8, area(2).len());
 }
 
 fn parse(input: &str) -> HashMap<(isize, isize), char> {
@@ -85,12 +84,12 @@ fn parse(input: &str) -> HashMap<(isize, isize), char> {
 
 #[test]
 fn test_part1() {
-    //assert_eq!(1, part1(include_str!("example.txt")));
-    assert_eq!(1338, part1(include_str!("input.txt")));
+    //  assert_eq!(1, part1(include_str!("example.txt")));
+    assert_eq!(1338, part1(include_str!("input.txt"), 2));
 }
 
 #[test]
 fn test_part2() {
-    //    assert_eq!(3, part2(include_str!("example.txt")));
-    //    assert_eq!(4, part2(include_str!("input.txt")));
+    //assert_eq!(3, part1(include_str!("example.txt")));
+    assert_eq!(975376, part1(include_str!("input.txt"), 20));
 }
