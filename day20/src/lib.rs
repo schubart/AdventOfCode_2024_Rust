@@ -1,3 +1,4 @@
+use rayon::prelude::*;
 use std::collections::{HashMap, VecDeque};
 
 pub fn part1(input: &str, max_cheat: i16) -> usize {
@@ -32,8 +33,8 @@ pub fn part1(input: &str, max_cheat: i16) -> usize {
     }
 
     let area = area(max_cheat);
-    grid.keys()
-        .map(|&(x, y)| {
+    grid.par_iter()
+        .map(|(&(x, y), _c)| {
             let mut result = 0;
 
             if let Some(&d1) = distances.get(&(x, y)) {
