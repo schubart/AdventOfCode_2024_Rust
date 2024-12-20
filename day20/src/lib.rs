@@ -31,9 +31,40 @@ pub fn part1(input: &str) -> usize {
         }
     }
 
-    dbg!(distances.get(&end));
+    grid
+        .iter()
+        .filter(|(&pos, &c)| {
+            if c == '#' {
+                if let Some(s) = savings(&distances, pos) {
+                    s >= 100
+                } else {
+                    false
+                }
+            } else {
+                false
+            }
+        })
+        .count()
+}
 
-    0
+fn savings(distances: &HashMap<(isize, isize), usize>, cheat: (isize, isize)) -> Option<usize> {
+    let n1 = (cheat.0 - 1, cheat.1);
+    let n2 = (cheat.0 + 1, cheat.1);
+    if let Some(&d1) = distances.get(&n1) {
+        if let Some(&d2) = distances.get(&n2) {
+            return Some(d1.abs_diff(d2) - 2);
+        }
+    }
+
+    let n1 = (cheat.0, cheat.1 - 1);
+    let n2 = (cheat.0, cheat.1 + 1);
+    if let Some(&d1) = distances.get(&n1) {
+        if let Some(&d2) = distances.get(&n2) {
+            return Some(d1.abs_diff(d2) - 2);
+        }
+    }
+
+    None
 }
 
 pub fn part2(input: &str) -> usize {
@@ -54,8 +85,8 @@ fn parse(input: &str) -> HashMap<(isize, isize), char> {
 
 #[test]
 fn test_part1() {
-    assert_eq!(1, part1(include_str!("example.txt")));
-    //    assert_eq!(2, part1(include_str!("input.txt")));
+    //assert_eq!(1, part1(include_str!("example.txt")));
+    assert_eq!(1338, part1(include_str!("input.txt")));
 }
 
 #[test]
