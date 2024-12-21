@@ -2,7 +2,7 @@
 resolver = "2"
 
 members = [
-    "day*",
+    "day21",
 ]
 
 [workspace.lints.rust]
