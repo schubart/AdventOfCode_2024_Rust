@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use std::collections::VecDeque;
 
-type State = ([Option<char>; 4], [char; 3]); // Number buttons pushed, bots pointing
+type State = (usize, [char; 3]); // Number buttons pushed, bots pointing
 
 pub fn part1(input: &str) -> usize {
     input
@@ -9,41 +9,24 @@ pub fn part1(input: &str) -> usize {
         .map(|line| {
             let chars = line.chars().collect::<Vec<_>>();
 
-            let state: State = ([None, None, None, None], ['A', 'A', 'A']);
+            let state: State = (0, ['A', 'A', 'A']);
 
             let mut seen = HashSet::new();
             let mut queue = VecDeque::from([(state, 0)]);
 
             let pushes = loop {
                 let (state, count) = queue.pop_front().unwrap();
-                
+
                 if !seen.insert(state) {
                     continue;
                 }
 
-//                eprintln!("{state:?}");
-
-                if chars
-                    .iter()
-                    .zip(state.0.iter().copied())
-                    .any(|(&b1, b2)| b2.is_some() && b2 != Some(b1))
-                {
-                    continue; // Pushed a wrong button.
-                }
-
-                if state.0
-                    == [
-                        Some(chars[0]),
-                        Some(chars[1]),
-                        Some(chars[2]),
-                        Some(chars[3]),
-                    ]
-                {
+                if state.0 == chars.len() {
                     break count; // Pushed the right buttons.
                 }
 
                 for b in ['<', '>', '^', 'v', 'A'] {
-                    if let Some(next) = next(state, b) {
+                    if let Some(next) = next(state, b, chars[state.0]) {
                         queue.push_back((next, count + 1));
                     }
                 }
@@ -60,17 +43,24 @@ pub fn part1(input: &str) -> usize {
         .sum()
 }
 
-fn next(mut state: State, button: char) -> Option<State> {
+fn next(mut state: State, button: char, next_num: char) -> Option<State> {
     if button == 'A' {
         if state.1[2] == 'A' {
             if state.1[1] == 'A' {
-                state.0 = match (state.0[0], state.0[1], state.0[2], state.0[3]) {
-                    (None, None, None, None) => [Some(state.1[0]), None, None, None],
-                    (x, None, None, None) => [x, Some(state.1[0]), None, None],
-                    (x, y, None, None) => [x, y, Some(state.1[0]), None],
-                    (x, y, z, None) => [x, y, z, Some(state.1[0])],
-                    _ => panic!(),
+                if state.1[0] == next_num {
+                    state.0 += 1;
+                } else {
+                    return None;
+                }
+                /*
+                    state.0 = match (state.0[0], state.0[1], state.0[2], state.0[3]) {
+                        (None, None, None, None) => [Some(state.1[0]), None, None, None],
+                        (x, None, None, None) => [x, Some(state.1[0]), None, None],
+                        (x, y, None, None) => [x, y, Some(state.1[0]), None],
+                        (x, y, z, None) => [x, y, z, Some(state.1[0])],
+                        _ => panic!(),
                 };
+                    */
             } else {
                 state.1[0] = numbers(state.1[0], state.1[1])?;
             }
@@ -111,7 +101,7 @@ fn numbers(current: char, button: char) -> Option<char> {
 
         ('1', '^') => Some('4'),
         ('1', '>') => Some('2'),
-        
+
         ('2', '^') => Some('5'),
         ('2', '<') => Some('1'),
         ('2', '>') => Some('3'),
@@ -123,7 +113,7 @@ fn numbers(current: char, button: char) -> Option<char> {
 
         ('0', '^') => Some('2'),
         ('0', '>') => Some('A'),
-        
+
         ('A', '^') => Some('3'),
         ('A', '<') => Some('0'),
 
