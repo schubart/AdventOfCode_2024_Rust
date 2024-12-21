@@ -44,22 +44,25 @@ pub fn part1<const N: usize>(input: &str) -> usize {
 }
 
 fn next<const N: usize>(mut state: State<N>, button: char, next_num: char) -> Option<State<N>> {
-    if button == 'A' {
-        if state.1[2] == 'A' {
-            if state.1[1] == 'A' {
-                if state.1[0] == next_num {
-                    state.0 += 1;
-                } else {
-                    return None;
-                }
-            } else {
-                state.1[0] = numbers(state.1[0], state.1[1])?;
-            }
-        } else {
-            state.1[1] = directions(state.1[1], state.1[2])?;
-        }
-    } else {
+    if button != 'A' {
         state.1[2] = directions(state.1[2], button)?;
+        return Some(state);
+    }
+
+    if state.1[2] != 'A' {
+        state.1[1] = directions(state.1[1], state.1[2])?;
+        return Some(state);
+    }
+
+    if state.1[1] != 'A' {
+        state.1[0] = numbers(state.1[0], state.1[1])?;
+        return Some(state);
+    }
+
+    if state.1[0] == next_num {
+        state.0 += 1;
+    } else {
+        return None;
     }
 
     Some(state)
