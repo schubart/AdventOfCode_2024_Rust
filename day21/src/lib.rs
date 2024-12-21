@@ -18,9 +18,6 @@ pub fn part1(input: &str) -> usize {
     let mut num = HashMap::<(char, char), Vec<char>>::new();
     for (&c1, (x1, y1)) in num_buttons.iter() {
         for (&c2, (x2, y2)) in num_buttons.iter() {
-            if c1 == c2 {
-                continue;
-            }
             let mut seq = Vec::new();
             if y2 < y1 {
                 for _ in 0..(y1 - y2) {
@@ -93,12 +90,14 @@ pub fn part1(input: &str) -> usize {
 
             let chars = line.chars().collect::<Vec<_>>();
 
+            let mut seq = String::new();
             let mut count = 0;
             for &c1 in &chars {
                 for &c2 in &num[&(state[0], c1)] {
                     for &c3 in &dir[&(state[1], c2)] {
                         for &c4 in &dir[&(state[2], c3)] {
                             count += 1;
+                            seq.push(c4);
                         }
                         state[2] = c3;
                     }
@@ -119,7 +118,7 @@ pub fn part1(input: &str) -> usize {
                 .parse::<usize>()
                 .unwrap();
 
-            dbg!(count);
+            dbg!(seq);
             num * count
         })
         .sum()
@@ -143,8 +142,9 @@ fn parse(input: &str) -> HashMap<(isize, isize), char> {
 
 #[test]
 fn test_part1() {
-    assert_eq!(1, part1(include_str!("example.txt")));
-    //    assert_eq!(2, part1(include_str!("input.txt")));
+    assert_eq!(126384, part1(include_str!("example.txt")));
+    // assert_eq!(2, part1(include_str!("input.txt")));
+    // not: 198336 (it's too high)
 }
 
 #[test]
