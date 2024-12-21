@@ -131,18 +131,6 @@ fn numbers(current: char, button: char) -> Option<char> {
     }
 }
 
-/*
-+---+---+---+
-| 7 | 8 | 9 |
-+---+---+---+
-| 4 | 5 | 6 |
-+---+---+---+
-| 1 | 2 | 3 |
-+---+---+---+
-    | 0 | A |
-    +---+---+
- */
-
 fn directions(current: char, button: char) -> Option<char> {
     match (current, button) {
         ('^', '>') => Some('A'),
@@ -163,14 +151,6 @@ fn directions(current: char, button: char) -> Option<char> {
         _ => None,
     }
 }
-
-/*
-    +---+---+
-    | ^ | A |
-+---+---+---+
-| < | v | > |
-+---+---+---+
- */
 
 #[test]
 fn test_part1() {
