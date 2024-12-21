@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use std::collections::VecDeque;
 
-type State = (usize, [char; 3]); // Number buttons pushed, bots pointing
+type State<const N: usize> = (usize, [char; N]); // Number buttons pushed, bots pointing
 
 pub fn part1<const N: usize>(input: &str) -> usize {
     input
@@ -9,7 +9,7 @@ pub fn part1<const N: usize>(input: &str) -> usize {
         .map(|line| {
             let chars = line.chars().collect::<Vec<_>>();
 
-            let state: State = (0, ['A', 'A', 'A']);
+            let state: State<N> = (0, ['A'; N]);
 
             let mut seen = HashSet::new();
             let mut queue = VecDeque::from([(state, 0)]);
@@ -26,7 +26,7 @@ pub fn part1<const N: usize>(input: &str) -> usize {
                 }
 
                 for b in ['<', '>', '^', 'v', 'A'] {
-                    if let Some(next) = next(state, b, chars[state.0]) {
+                    if let Some(next) = next::<N>(state, b, chars[state.0]) {
                         queue.push_back((next, count + 1));
                     }
                 }
@@ -43,7 +43,7 @@ pub fn part1<const N: usize>(input: &str) -> usize {
         .sum()
 }
 
-fn next(mut state: State, button: char, next_num: char) -> Option<State> {
+fn next<const N: usize>(mut state: State<N>, button: char, next_num: char) -> Option<State<N>> {
     if button == 'A' {
         if state.1[2] == 'A' {
             if state.1[1] == 'A' {
@@ -135,8 +135,8 @@ fn directions(current: char, button: char) -> Option<char> {
 
 #[test]
 fn test_part1() {
-    assert_eq!(126384, part1::<2>(include_str!("example.txt")));
-    assert_eq!(188384, part1::<2>(include_str!("input.txt")));
+    assert_eq!(126384, part1::<{ 2 + 1 }>(include_str!("example.txt")));
+    assert_eq!(188384, part1::<{ 2 + 1 }>(include_str!("input.txt")));
 }
 
 #[test]
