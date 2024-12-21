@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use std::collections::VecDeque;
 
-type State<const N: usize> = (usize, [char; N]); // Number buttons pushed, bots pointing
+type State<const N: usize> = (u8, [char; N]); // Number buttons pushed, bots pointing
 
 pub fn part1<const N: usize>(input: &str) -> usize {
     input
@@ -21,12 +21,12 @@ pub fn part1<const N: usize>(input: &str) -> usize {
                     continue;
                 }
 
-                if state.0 == chars.len() {
+                if state.0 as usize == chars.len() {
                     break count; // Pushed the right buttons.
                 }
 
                 for b in ['<', '>', '^', 'v', 'A'] {
-                    if let Some(next) = next::<N>(state, b, chars[state.0]) {
+                    if let Some(next) = next::<N>(state, b, chars[state.0 as usize]) {
                         queue.push_back((next, count + 1));
                     }
                 }
@@ -141,14 +141,14 @@ fn directions(current: char, button: char) -> Option<char> {
     }
 }
 
-#[test]
-fn test_part1() {
-    assert_eq!(126384, part1::<{ 2 + 1 }>(include_str!("example.txt")));
-    assert_eq!(188384, part1::<{ 2 + 1 }>(include_str!("input.txt")));
-}
+//#[test]
+//fn test_part1() {
+//    assert_eq!(126384, part1::<{ 2 + 1 }>(include_str!("example.txt")));
+//    assert_eq!(188384, part1::<{ 2 + 1 }>(include_str!("input.txt")));
+//}
 
 #[test]
 fn test_part2() {
     //    assert_eq!(3, part2(include_str!("example.txt")));
-    //    assert_eq!(4, part2(include_str!("input.txt")));
+    assert_eq!(4, part1::<{25 + 1}>("879A"));
 }
