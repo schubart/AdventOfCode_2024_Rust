@@ -21,7 +21,7 @@ pub fn part1(input: &str) -> usize {
                     continue;
                 }
 
-                eprintln!("{state:?}");
+//                eprintln!("{state:?}");
 
                 if chars
                     .iter()
@@ -175,8 +175,7 @@ fn directions(current: char, button: char) -> Option<char> {
 #[test]
 fn test_part1() {
     assert_eq!(126384, part1(include_str!("example.txt")));
-    // assert_eq!(2, part1(include_str!("input.txt")));
-    // not: 198336 (it's too high)
+    assert_eq!(188384, part1(include_str!("input.txt")));
 }
 
 #[test]
