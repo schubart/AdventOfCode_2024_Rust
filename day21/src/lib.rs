@@ -3,7 +3,7 @@ use std::collections::VecDeque;
 
 type State = (usize, [char; 3]); // Number buttons pushed, bots pointing
 
-pub fn part1(input: &str) -> usize {
+pub fn part1<const N: usize>(input: &str) -> usize {
     input
         .lines()
         .map(|line| {
@@ -52,15 +52,6 @@ fn next(mut state: State, button: char, next_num: char) -> Option<State> {
                 } else {
                     return None;
                 }
-                /*
-                    state.0 = match (state.0[0], state.0[1], state.0[2], state.0[3]) {
-                        (None, None, None, None) => [Some(state.1[0]), None, None, None],
-                        (x, None, None, None) => [x, Some(state.1[0]), None, None],
-                        (x, y, None, None) => [x, y, Some(state.1[0]), None],
-                        (x, y, z, None) => [x, y, z, Some(state.1[0])],
-                        _ => panic!(),
-                };
-                    */
             } else {
                 state.1[0] = numbers(state.1[0], state.1[1])?;
             }
@@ -144,8 +135,8 @@ fn directions(current: char, button: char) -> Option<char> {
 
 #[test]
 fn test_part1() {
-    assert_eq!(126384, part1(include_str!("example.txt")));
-    assert_eq!(188384, part1(include_str!("input.txt")));
+    assert_eq!(126384, part1::<2>(include_str!("example.txt")));
+    assert_eq!(188384, part1::<2>(include_str!("input.txt")));
 }
 
 #[test]
