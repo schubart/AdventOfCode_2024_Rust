@@ -53,8 +53,8 @@ fn next<const N: usize>(mut state: State<N>, button: char, next_num: char) -> Op
         trigger = state.1[x];
     }
 
-    if state.1[1] != 'A' {
-        state.1[0] = numbers(state.1[0], state.1[1])?;
+    if trigger != 'A' {
+        state.1[0] = numbers(state.1[0], trigger)?;
         return Some(state);
     }
 
@@ -135,14 +135,14 @@ fn directions(current: char, button: char) -> Option<char> {
     }
 }
 
-//#[test]
-//fn test_part1() {
-//    assert_eq!(126384, part1::<{ 2 + 1 }>(include_str!("example.txt")));
-//    assert_eq!(188384, part1::<{ 2 + 1 }>(include_str!("input.txt")));
-//}
+#[test]
+fn test_part1() {
+    assert_eq!(126384, part1::<{ 2 + 1 }>(include_str!("example.txt")));
+    assert_eq!(188384, part1::<{ 2 + 1 }>(include_str!("input.txt")));
+}
 
 #[test]
 fn test_part2() {
     //    assert_eq!(3, part2(include_str!("example.txt")));
-    assert_eq!(4, part1::<{25 + 1}>("879A"));
+//    assert_eq!(4, part1::<{25 + 1}>("879A"));
 }
