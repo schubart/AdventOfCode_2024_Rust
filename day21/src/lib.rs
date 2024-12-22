@@ -53,12 +53,6 @@ fn next<const N: usize>(mut state: State<N>, button: char, next_num: char) -> Op
         trigger = state.1[x];
     }
 
-    /*
-        if state.1[2] != 'A' {
-            state.1[1] = directions(state.1[1], state.1[2])?;
-            return Some(state);
-        }
-    */
     if state.1[1] != 'A' {
         state.1[0] = numbers(state.1[0], state.1[1])?;
         return Some(state);
