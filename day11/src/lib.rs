@@ -25,7 +25,7 @@ fn evolve(blink: usize, stone: usize) -> usize {
     }
 }
 
-fn split(stone: usize) -> Option<(usize, usize)> {
+const fn split(stone: usize) -> Option<(usize, usize)> {
     let digits = stone.ilog10() + 1;
     
     if digits % 2 == 0 {

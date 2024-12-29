@@ -6,6 +6,9 @@ type Position = (isize, isize);
 type Button = char;
 type Cost = usize;
 
+const NUM_PAD: &str = "789\n456\n123\n 0A";
+const DIR_PAD: &str = " ^A\n<v>\n";
+
 pub fn solve(input: &str, robots: usize) -> Cost {
     input
         .lines()
@@ -92,18 +95,6 @@ fn parse_pad(
 
     (grid, from_pos.unwrap(), to_pos.unwrap())
 }
-
-const NUM_PAD: &str = r#"
-789
-456
-123
- 0A
-"#;
-
-const DIR_PAD: &str = r#"
- ^A
-<v>
-"#;
 
 #[test]
 fn test_part1() {
