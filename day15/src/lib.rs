@@ -1,12 +1,14 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
 
-type Point = (isize, isize);
-type Grid = HashMap<Point, char>;
+type Dimension = isize;
+type Position = (Dimension, Dimension);
+type Grid = HashMap<Position, char>;
 type Moves = String;
+type Direction = (Dimension, Dimension);
 
-pub fn solve(input: &str, stretch: bool) -> isize {
-    let (mut grid, mut pos, moves) = parse(input, stretch);
+pub fn solve(input: &str, stretch: bool) -> Dimension {
+    let (mut grid, (mut x, mut y), moves) = parse(input, stretch);
 
     for m in moves.chars() {
         let (dx, dy) = match m {
@@ -17,14 +19,10 @@ pub fn solve(input: &str, stretch: bool) -> isize {
             _ => panic!(),
         };
 
-        let can_move = if dy == 0 {
-            move_x(&mut grid, pos, dx)
-        } else {
-            move_y(&mut grid, HashSet::from([pos]), dy)
-        };
+        let moved = try_move(&mut grid, (x, y), (dx, dy));
 
-        if can_move {
-            pos = (pos.0 + dx, pos.1 + dy);
+        if moved {
+            (x, y) = (x + dx, y + dy);
         }
     }
 
@@ -33,14 +31,22 @@ pub fn solve(input: &str, stretch: bool) -> isize {
         .sum()
 }
 
-fn move_x(grid: &mut Grid, pos: Point, dir: isize) -> bool {
-    let next = (pos.0 + dir, pos.1);
+fn try_move(grid: &mut Grid, pos: Position, (dx, dy): Direction) -> bool {
+    if dy == 0 {
+        try_move_x(grid, pos, dx)
+    } else {
+        try_move_y(grid, HashSet::from([pos]), dy)
+    }
+}
+
+fn try_move_x(grid: &mut Grid, pos: Position, dx: Dimension) -> bool {
+    let next = (pos.0 + dx, pos.1);
     let tile = grid[&next];
 
     let ok = match tile {
         '#' => false,
         '.' => true,
-        _ => move_x(grid, next, dir),
+        _ => try_move_x(grid, next, dx),
     };
 
     if ok {
@@ -51,14 +57,14 @@ fn move_x(grid: &mut Grid, pos: Point, dir: isize) -> bool {
     ok
 }
 
-fn move_y(grid: &mut Grid, set: HashSet<(isize, isize)>, dir_y: isize) -> bool {
+fn try_move_y(grid: &mut Grid, set: HashSet<Position>, dy: isize) -> bool {
     if set.is_empty() {
         return true;
     }
 
     let mut new_set = HashSet::new();
     for pos in &set {
-        let next = (pos.0, pos.1 + dir_y);
+        let next = (pos.0, pos.1 + dy);
         let tile = grid[&next];
 
         match tile {
@@ -79,10 +85,10 @@ fn move_y(grid: &mut Grid, set: HashSet<(isize, isize)>, dir_y: isize) -> bool {
         }
     }
 
-    if move_y(grid, new_set, dir_y) {
+    if try_move_y(grid, new_set, dy) {
         for pos in set {
             let tile = grid[&pos];
-            grid.insert((pos.0, pos.1 + dir_y), tile);
+            grid.insert((pos.0, pos.1 + dy), tile);
             grid.insert(pos, '.');
         }
         return true;
@@ -91,7 +97,7 @@ fn move_y(grid: &mut Grid, set: HashSet<(isize, isize)>, dir_y: isize) -> bool {
     false
 }
 
-fn parse(input: &str, stretch: bool) -> (Grid, Point, Moves) {
+fn parse(input: &str, stretch: bool) -> (Grid, Position, Moves) {
     let input = if stretch {
         input
             .replace('#', "##")
@@ -104,7 +110,7 @@ fn parse(input: &str, stretch: bool) -> (Grid, Point, Moves) {
 
     let mut lines = input.lines();
 
-    let mut pos = (0, 0);
+    let mut start = None;
     let mut grid = HashMap::new();
     let mut y = 0;
     loop {
@@ -112,20 +118,20 @@ fn parse(input: &str, stretch: bool) -> (Grid, Point, Moves) {
         if line.is_empty() {
             break;
         }
-        for (x, c) in line.chars().enumerate() {
+        for (x, mut c) in line.chars().enumerate() {
+            let pos = (x as Dimension, y as Dimension);
             if c == '@' {
-                pos = (x as isize, y as isize);
-                grid.insert((x as isize, y as isize), '.');
-            } else {
-                grid.insert((x as isize, y as isize), c);
+                start = Some(pos);
+                c = '.';
             }
+            grid.insert(pos, c);
         }
         y += 1;
     }
 
     let moves = lines.collect();
 
-    (grid, pos, moves)
+    (grid, start.unwrap(), moves)
 }
 
 #[test]
