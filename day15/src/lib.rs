@@ -1,5 +1,3 @@
-#![allow(clippy::cast_sign_loss)]
-
 use std::collections::HashMap;
 use std::collections::HashSet;
 
@@ -7,7 +5,7 @@ type Point = (isize, isize);
 type Grid = HashMap<Point, char>;
 type Moves = String;
 
-pub fn solve(input: &str, stretch: bool) -> usize {
+pub fn solve(input: &str, stretch: bool) -> isize {
     let (mut grid, mut pos, moves) = parse(input, stretch);
 
     for m in moves.chars() {
@@ -32,7 +30,7 @@ pub fn solve(input: &str, stretch: bool) -> usize {
 
     grid.iter()
         .filter_map(|((x, y), c)| (c == &'O' || c == &'[').then_some(x + 100 * y))
-        .sum::<isize>() as usize
+        .sum()
 }
 
 fn move_x(grid: &mut Grid, pos: Point, dir: isize) -> bool {
