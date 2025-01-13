@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
 
-type Dimension = isize;
+type Dimension = i32;
 type Position = (Dimension, Dimension);
 type Grid = HashMap<Position, char>;
 type Moves = String;
@@ -57,13 +57,13 @@ fn try_move_x(grid: &mut Grid, pos: Position, dx: Dimension) -> bool {
     ok
 }
 
-fn try_move_y(grid: &mut Grid, set: HashSet<Position>, dy: isize) -> bool {
-    if set.is_empty() {
+fn try_move_y(grid: &mut Grid, positions: HashSet<Position>, dy: Dimension) -> bool {
+    if positions.is_empty() {
         return true;
     }
 
     let mut new_set = HashSet::new();
-    for pos in &set {
+    for pos in &positions {
         let next = (pos.0, pos.1 + dy);
         let tile = grid[&next];
 
@@ -86,7 +86,7 @@ fn try_move_y(grid: &mut Grid, set: HashSet<Position>, dy: isize) -> bool {
     }
 
     if try_move_y(grid, new_set, dy) {
-        for pos in set {
+        for pos in positions {
             let tile = grid[&pos];
             grid.insert((pos.0, pos.1 + dy), tile);
             grid.insert(pos, '.');
