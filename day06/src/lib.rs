@@ -43,7 +43,7 @@ fn visit(grid: &Grid, start: Position) -> Positions {
             _ => {
                 return visited;
             }
-        };
+        }
     }
 }
 
@@ -73,7 +73,7 @@ fn is_loop(grid: &Grid, start: Position, obstacle: Position) -> bool {
             _ => {
                 return false;
             }
-        };
+        }
     }
 }
 
