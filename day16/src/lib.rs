@@ -54,7 +54,7 @@ pub fn part2(input: &str) -> Count {
     // Breadth-first-search from end back to start.
     let mut queue: VecDeque<(Cost, State)> = costs
         .iter()
-        .filter(|(&(pos, _dir), &cost)| pos == end && cost == min_cost)
+        .filter(|&(&(pos, _dir), &cost)| pos == end && cost == min_cost)
         .map(|(&state, &cost)| (cost, state))
         .collect();
     let mut seen = HashSet::new();
