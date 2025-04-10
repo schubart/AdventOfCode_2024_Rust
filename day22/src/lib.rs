@@ -1,5 +1,5 @@
-use itertools::iterate;
 use itertools::Itertools;
+use itertools::iterate;
 use std::collections::{HashMap, HashSet};
 
 type Sequence = (i8, i8, i8, i8);

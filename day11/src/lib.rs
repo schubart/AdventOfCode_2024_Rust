@@ -14,7 +14,7 @@ fn evolve(blink: usize, stone: usize) -> usize {
         1
     } else {
         let blink = blink - 1;
-        
+
         if stone == 0 {
             evolve(blink, 1)
         } else if let Some((s1, s2)) = split(stone) {
@@ -27,7 +27,7 @@ fn evolve(blink: usize, stone: usize) -> usize {
 
 const fn split(stone: usize) -> Option<(usize, usize)> {
     let digits = stone.ilog10() + 1;
-    
+
     if digits % 2 == 0 {
         let divisor = 10_usize.pow(digits / 2);
         Some((stone / divisor, stone % divisor))
